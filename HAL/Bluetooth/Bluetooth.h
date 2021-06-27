@@ -15,5 +15,8 @@
 
 #define  BAUD_RATE 9600
 void HC05_vInit(void);
+uint8 HC05_u8Receive(void);
+void HC05_vSend(uint8 data) ;
+void HC05_vPrint(char *str);
 
 #endif /* BLUETOOTH_H_ */

@@ -14,14 +14,12 @@
 #include "Std_macros.h"
 #include "std_types.h"
 #include "LCD.h"
-#include "Car_Cfg.h"
+#include "Timer2.h"
 
 #define N1      0
 #define N2      1
 #define N3      2
 #define N4      3
-#define ENA     4 
-#define ENB     5
 
 #define Forward F
 #define Back    B
@@ -29,9 +27,11 @@
 #define Right   R
 #define Stop    S
 
+volatile uint16 DutyCycle ;
+
 void Driver_vInit(void);
 void Driver_vCommand(uint8 data);
-
+void Driver_vSetSpeed(uint8 Speed);
 
 
 #endif /* MOTOR_DRIVER_H_ */

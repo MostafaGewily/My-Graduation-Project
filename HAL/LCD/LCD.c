@@ -6,99 +6,76 @@
  */ 
 #include "LCD.h"
 
-static void SendFallingEdge(void)
-{
-	SET_BIT(PORTB,EN) ;
-	_delay_ms(5) ;
-	CLR_BIT(PORTB,EN) ;
-	_delay_ms(5) ;
+void SEND_FALLING_EDGE(void){
+	SET_BIT(PORTA,EN);
+	_delay_ms(5);
+	CLR_BIT(PORTA,EN);
+	_delay_ms(5);
 }
-
-void LCD_vInit(void)
-{
+void SEND_CMD(uint8 cmd){
+	PORTA&=0x0f;      // #define LSB 0x0f
+	PORTA|=(cmd&0xf0);//send last 4 digits, #define MSB 0xf0
+	CLR_BIT(PORTA,RS);
+	SEND_FALLING_EDGE();
+	PORTA&=0x0f;
+	PORTA|=(cmd<<4);//send first 4 digits
+	CLR_BIT(PORTA,RS);
+	SEND_FALLING_EDGE();
+}
+void SEND_DATA(uint8 cmd){
+	PORTA&=0x0f;
+	PORTA|=(cmd&0xf0);//send last 4 digits
+	SET_BIT(PORTA,RS);
+	SEND_FALLING_EDGE();
+	PORTA&=0x0f;
+	PORTA|=(cmd<<4);//send first 4 digits
+	SET_BIT(PORTA,RS);
+	SEND_FALLING_EDGE();
+}
+void LCD_INITIALIZE(void){
+	
 	// SET RS,RW,EN '1'
-	SET_BIT(DDRB,RS);
-	SET_BIT(DDRB,RW);
-	SET_BIT(DDRB,EN);
+	SET_BIT(DDRA,RS);
+	SET_BIT(DDRA,RW);
+	SET_BIT(DDRA,EN);
 	//4-MSBBins_PORTA OUTPUT
 	SET_BIT(DDRA,4);
 	SET_BIT(DDRA,5);
 	SET_BIT(DDRA,6);
 	SET_BIT(DDRA,7);
 	// RW clear to be write
-	CLR_BIT(PORTB,RW) ;
+	CLR_BIT(PORTA,RW);
 	//Commands
 	// Initialization
-	LCD_vSendCmd(INITIALIZATION_4_1) ;
+	SEND_CMD(0x33);
 	_delay_ms(1);
-	LCD_vSendCmd(INITIALIZATION_4_2) ;
-	_delay_ms(1);
-	LCD_vSendCmd(INITIALIZATION_4_3) ;
+	SEND_CMD(0x32);
+    _delay_ms(1);
+	SEND_CMD(0x28);
 	_delay_ms(1);
 	// Clear screen
-	LCD_vSendCmd(CLEAR_LCD) ;
+	SEND_CMD(0x01);
 	// Blink Cursor
-	LCD_vSendCmd(BLINK_CURSOR) ;
-	_delay_ms(20) ;
+	SEND_CMD(0x0f);
+	_delay_ms(20);
 }
-
-void LCD_vSendCmd(uint8 cmd)
-{
-	// put 4MSB_Data on data lines
-	PORTA &=LSB ;
-	PORTA |=(cmd&MSB);
-	// Choose Rs=0
-	CLR_BIT(PORTB,RS) ;
-	//send falling edge
-	SendFallingEdge();
-	// put 4LSB_Data on data lines
-	PORTA &=LSB;
-	PORTA |= (cmd<<4) ;
-	CLR_BIT(PORTB,RS);
-	SendFallingEdge();
-}
-
-void LCD_vSendData(uint8 data)
-{
-	// put 4MSB_Data on data lines
-	PORTA &=LSB ;
-	PORTA |=(data&MSB);
-	// Choose Rs=0
-	SET_BIT(PORTB,RS) ;
-	//send falling edge
-	SendFallingEdge();
-	// put 4LSB_Data on data lines
-	PORTA &=LSB;
-	PORTA |= (data<<4) ;
-	SET_BIT(PORTB,RS);
-	SendFallingEdge();
-}
-
-void LCD_vPrintData(uint8 *str)
-{
-   while (*str)
-   {
-	   LCD_vSendData(*str++) ;
-   }
-}
-
-void LCD_vCleanScreen(void)
-{
-	LCD_vSendCmd(CLEAR_LCD) ;
-}
-
-void LCD_vMoveCursor(uint8 row, uint8 col)
-{
-	uint8 temp ;
-	if(row == 0)  /* ox80 - 0x8f */
-	{
-		temp = FIRST_ROW + col ;
+void MOVING_CURSOR(uint8 row ,uint8 col){
+	uint8 temp;
+	if(row==0){
+		temp=0x80+col;
 	}
-	else
-	{
-		temp = SECOND_ROW + col ;
+	else{
+		temp=0xc0+col;
 	}
-	LCD_vSendCmd(temp) ;
+	SEND_CMD(temp);
 }
-
+void LCD_PRINT(char *cmd){
+	for(int i=0;i<16;i++)
+	{
+		if(cmd[i]=='\0'){
+			break;
+		}
+		SEND_DATA(cmd[i]);
+	}
+}
 

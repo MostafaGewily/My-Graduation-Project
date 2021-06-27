@@ -7,19 +7,71 @@
 
 #include "Motor_Driver.h"
 
-#ifdef Car_Manual
-
 void Driver_vInit(void)
 {
 	uint8 i ;
-	for(i=0;i<6;i++)
+	// 4_Pins EN1,2,3,4
+	for(i=0;i<4;i++)
 	{
 		SET_BIT(DDRC,i);
 	}
+	// Enable A,B
+	SET_BIT(DDRD,7);
+	
+	// Initiate values
+	//Timer2_SetDutyCycle(51); // Low Speed
+	//SET_BIT(PORTD,7);  //Full Speed
+	Driver_vCommand('S');
+}
+
+void Driver_vSetSpeed(uint8 Speed)
+{
+	DutyCycle = Speed*51;
+	MOVING_CURSOR(2,0);
+	switch(Speed)
+	{
+		case 0+'0':
+		LCD_PRINT("Dutycycle is:0");
+		Timer2_SetDutyCycle(DutyCycle);
+		// Stop
+		CLR_BIT(PORTC,N1);
+		CLR_BIT(PORTC,N2);
+		CLR_BIT(PORTC,N3);
+		CLR_BIT(PORTC,N4);
+		break;
+		
+		case 1+'0':
+		LCD_PRINT("Dutycycle is:51");
+		Timer2_SetDutyCycle(DutyCycle);
+		break;
+		
+		case 2+'0':
+		LCD_PRINT("Dutycycle is:102");
+		Timer2_SetDutyCycle(DutyCycle);
+		break;
+		
+		case 3+'0':
+		LCD_PRINT("Dutycycle is:153");
+		Timer2_SetDutyCycle(DutyCycle);
+		break;
+		
+		case 4+'0':
+		LCD_PRINT("Dutycycle is:204");
+		Timer2_SetDutyCycle(DutyCycle);
+		break;
+		
+		case 5+'0':
+		LCD_PRINT("Dutycycle is:255");
+		Timer2_SetDutyCycle(DutyCycle);
+		break;
+	}
+	
 }
 
 void Driver_vCommand(uint8 data)
 {
+	// 4250   90
+	// 2125   45
 	switch (data)
 	{
 		// Forward
@@ -30,9 +82,8 @@ void Driver_vCommand(uint8 data)
 		CLR_BIT(PORTC,N1);
 		CLR_BIT(PORTC,N3);
 		
-		LCD_vCleanScreen();
-		LCD_vPrintData("Forward");
-		
+		SEND_CMD(0x01);
+		LCD_PRINT(" Forward");
 		break;
 		
 		// Back
@@ -43,8 +94,8 @@ void Driver_vCommand(uint8 data)
 		CLR_BIT(PORTC,N2);
 		CLR_BIT(PORTC,N4);
 		
-		LCD_vCleanScreen();
-		LCD_vPrintData("Back");
+		SEND_CMD(0x01);
+		LCD_PRINT(" Back");
 		break;
 		
 		// Right
@@ -54,9 +105,8 @@ void Driver_vCommand(uint8 data)
 		SET_BIT(PORTC,N3);
 		CLR_BIT(PORTC,N1);
 		CLR_BIT(PORTC,N4);
-		
-		LCD_vCleanScreen();
-		LCD_vPrintData("Right");
+		SEND_CMD(0x01);
+		LCD_PRINT(" Right");
 		break;
 		
 		// Left
@@ -66,9 +116,8 @@ void Driver_vCommand(uint8 data)
 		SET_BIT(PORTC,N4);
 		CLR_BIT(PORTC,N2);
 		CLR_BIT(PORTC,N3);
-		
-		LCD_vCleanScreen();
-		LCD_vPrintData("Left");
+		SEND_CMD(0x01);
+		LCD_PRINT(" Left");
 		break;
 		
 		case 'S':
@@ -79,13 +128,10 @@ void Driver_vCommand(uint8 data)
 		CLR_BIT(PORTC,N3);
 		CLR_BIT(PORTC,N4);
 		
-		LCD_vCleanScreen();
-		LCD_vPrintData("Stop");
+		SEND_CMD(0x01);
+		LCD_PRINT(" Stop");
 		break;
 	}
+	
 }
 
-#else
-
-
-#endif

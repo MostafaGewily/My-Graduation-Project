@@ -15,7 +15,7 @@
 #include "LCD.h"
 
 void SpeedMotor_vInit(void);
-uint16 SpeedMotor_u16GetSpeed(void);
+void SpeedMotor_u8GetSpeed(uint8 count);
 
 
 

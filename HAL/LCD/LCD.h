@@ -8,20 +8,21 @@
 #ifndef LCD_H_
 #define LCD_H_
 
-#define EN 3
-#define RW 2
-#define RS 1
-
 #include <avr/io.h>
-#include "std_types.h"
 #include "Std_macros.h"
-#include "LCD_cfg.h"
-#define F_CPU 16000000UL
+#include "std_types.h"
 #include <util/delay.h>
-void LCD_vSendCmd(uint8 cmd);
-void LCD_vInit(void);
-void LCD_vSendData(uint8 data);
-void LCD_vPrintData(uint8 *str); 
-void LCD_vCleanScreen(void);
-void LCD_vMoveCursor(uint8 row, uint8 col) ;
+#define F_CPU 16000000UL
+
+#define RS 1
+#define RW 2
+#define EN 3
+
+void SEND_FALLING_EDGE(void);
+void SEND_CMD(uint8 cmd);
+void LCD_INITIALIZE(void);
+void MOVING_CURSOR(uint8 row ,uint8 col);
+void LCD_PRINT(char *data);
+void SEND_DATA(uint8 cmd);
+
 #endif /* LCD_H_ */

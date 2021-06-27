@@ -10,7 +10,6 @@
 #define SERVO_MOTOR_H_
 
 #include <avr/io.h>
-#include "Timer1.h"
 #include "std_types.h"
 #include "Std_macros.h"
 

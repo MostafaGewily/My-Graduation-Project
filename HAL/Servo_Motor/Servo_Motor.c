@@ -9,23 +9,21 @@
 
 void Servo_vInit()
 {
-	SET_BIT(PORTB,4);
+	Timer1_Init();
+	Servo_vForward();
 }
 
 void Servo_vTurnRight()
 {
-   setDutyCycle(535);  //90 degree
-   Wait();	
+   Timer1_setDutyCycle(97);  //90 degree correct	
 }
 
 void Servo_vTurnLeft()
 {
-	setDutyCycle(97);   //-90 degree
-	Wait();
+	Timer1_setDutyCycle(535);   //-90 degree 
 }
 
 void Servo_vForward()
 {
-	setDutyCycle(374);  // 0 degree
-	Wait();
+	Timer1_setDutyCycle(374);  // 0 degree or (316,374)
 }

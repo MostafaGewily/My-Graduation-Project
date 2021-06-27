@@ -1,7 +1,7 @@
 /*
  * IR_Sensor.h
  *
- * Created: 3/19/2021 4:12:28 PM
+ * Created: 6/3/2021 3:54:04 PM
  *  Author: ENG Mostafa
  */ 
 
@@ -12,12 +12,16 @@
 #include <avr/io.h>
 #include "Std_macros.h"
 #include "std_types.h"
+#include "Motor_Driver.h"
 #include "Servo_Motor.h"
+#include "LCD.h"
 
-void IR_vInit(void);
-void IR_vAvoidance(void);
+/* DDRD */
+#define Detect_Pin 2
+#define Detect_LED 3
 
 
-
+void IRSensor_vInit(void);
+void IRSensor_vAvoidance();
 
 #endif /* IR_SENSOR_H_ */
