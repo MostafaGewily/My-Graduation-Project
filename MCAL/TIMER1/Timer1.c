@@ -21,11 +21,13 @@ DDRD|=(1<<4)|(1<<5);   //PWM Pins as Output
 
 }
 
-void setDutyCycle(short DutyCycle)
+void Timer1_setDutyCycle(short DutyCycle)
 {
 	OCR1A = DutyCycle;
+	_delay_ms(15000);
 }
 
+/*
 void Wait()
 {
 	char i;
@@ -36,3 +38,4 @@ void Wait()
 		_delay_loop_2(0);
 	}
 }
+*/

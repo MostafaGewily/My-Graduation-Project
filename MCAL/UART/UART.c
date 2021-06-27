@@ -15,9 +15,9 @@ void UART_vInit(uint32 baud)
 		
 	/*1 - Choose baud rate that will be used by sender and receiver by writing to UBRRL/UBRRH*/
 	ubrr =  ( (F_CPU/ (16*baud)) - 1);
-		
+	
+	UBRRH = (char) (ubrr >> 8);	
 	UBRRL = (char) ubrr;
-	UBRRH = (char) (ubrr >> 8);
 	
 	/*3 - Choose number of data bits to be sent from UCSRC We will work with 8 bits.*/
 	UCSRC = (1<<URSEL)|(1<<UCSZ0) | (1<<UCSZ1);
@@ -28,7 +28,22 @@ void UART_vInit(uint32 baud)
 	UCSRB |= (1<<TXEN) | (1<<RXEN);
 }
 
+void UART_vSend(uint8 val)
+{
+	/*Wait for Transmit buffer to be empty*/
+	while( (UCSRA & (1<<UDRE)) == 0 )
+	{
+	}
+	/*Put data to transmit buffer*/
+	UDR = val;
+}
+
 uint8 UART_u8Receive()
 {
+      /*Wait for Receiving buffer to be empty*/
+       while((UCSRA & (1<<RXC)) == 0)
+	{
+		/* Waiting */
+	}
 	return UDR ;
 }

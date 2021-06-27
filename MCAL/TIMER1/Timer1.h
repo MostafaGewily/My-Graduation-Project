@@ -9,13 +9,16 @@
 #ifndef TIMER1_H_
 #define TIMER1_H_
 
-#define F_CPU 16000000
+
 #include <avr/io.h>
 #include <util/delay.h>
+#ifndef F_CPU
+#define F_CPU 16000000UL
+#endif
 
 void Timer1_Init(void);
 
-void setDutyCycle(short DutyCycle);
+void Timer1_setDutyCycle(short DutyCycle);
 
 void Wait(void);
 

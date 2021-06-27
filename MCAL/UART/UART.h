@@ -13,6 +13,7 @@
 #include "std_types.h"
 
 void UART_vInit(uint32 baud);
+void UART_vSend(uint8 val);
 uint8 UART_u8Receive(void);
 
 #endif
